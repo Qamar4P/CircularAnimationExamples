@@ -22,7 +22,7 @@ import android.widget.Toast;
  * animateProgress() will animate an arc on the border to the percentage given. 1 for complete, 0
  * for no border.
  */
-public class ButtonProgress extends View {
+public class GageMeterView extends View {
 
     /**
      * Logging tag.
@@ -160,7 +160,7 @@ public class ButtonProgress extends View {
     private boolean isProgressDone;
     private View layoutOfPopup;
 
-    public ButtonProgress(Context context) {
+    public GageMeterView(Context context) {
         super(context);
         init();
     }
@@ -202,18 +202,18 @@ public class ButtonProgress extends View {
         return true;
     }
 
-    public ButtonProgress(Context context, @Nullable AttributeSet attrs) {
+    public GageMeterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public ButtonProgress(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public GageMeterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
 
     }
 
-    public ButtonProgress(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public GageMeterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }

@@ -34,26 +34,6 @@ public class CircleRevealHideView extends View {
     static final String TAG = "CircleRevealView";
 
     /**
-     * Progress starts at the top of the circle.
-     */
-    public static final float START_TOP = -90;
-
-    /**
-     * Progress starts at the right side of the circle.
-     */
-    public static final float START_RIGHT = 0;
-
-    /**
-     * Progress starts at the bottom of the circle.
-     */
-    public static final float START_BOTTOM = 90;
-
-    /**
-     * Progress starts at the left side of the circle.
-     */
-    public static final float START_LEFT = 180;
-
-    /**
      * Default border width.
      */
     private static final int DEFAULT_BORDER_WIDTH = 10;
@@ -69,30 +49,10 @@ public class CircleRevealHideView extends View {
     private static final int DEFAULT_CIRCLE_COLOR = Color.parseColor("#FF5252");
 
     /**
-     * Value to use for clockwise rotation.
-     */
-    private static final int ROTATION_CLOCKWISE = 360;
-
-    /**
-     * Paint to use to draw the circle.
-     */
-    private Paint mMainPaint;
-
-
-    /**
      * Paint to use to draw the drop shadow.
      */
     private Paint mShadowPaint;
 
-    /**
-     * Paint for icon image.
-     */
-    private Paint mIconPaint;
-
-    /**
-     * Paint to use for next icon image to use.
-     */
-    private Paint mNextIconPaint;
 
     /**
      * Current border withd.
@@ -111,7 +71,6 @@ public class CircleRevealHideView extends View {
     /**
      * The current progress rotation.
      */
-    private float mRotation = ROTATION_CLOCKWISE;
 
     /**
      * Runnable instance to invoke when the progress meter reaches completion.
@@ -163,9 +122,6 @@ public class CircleRevealHideView extends View {
         mMaskPaint = new Paint();
 //        setLayerType(LAYER_TYPE_SOFTWARE, mMaskPaint);
         mMaskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
-
-        mIconPaint = new Paint();
-        mNextIconPaint = new Paint();
 
         mValueAnimator = ValueAnimator.ofFloat(0, 100);
         mValueAnimator.setDuration(500);

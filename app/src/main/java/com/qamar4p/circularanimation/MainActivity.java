@@ -3,31 +3,19 @@ package com.qamar4p.circularanimation;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
-import android.support.animation.DynamicAnimation;
-import android.support.animation.SpringAnimation;
-import android.support.animation.SpringForce;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.TouchDelegate;
 import android.view.VelocityTracker;
 import android.view.View;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private float downX, downY;
     private VelocityTracker velocityTracker;
     private View view1;
-    private ButtonProgress buttonPrimary;
+    private GageMeterView buttonPrimary;
     Context context;
     private PopupWindow popupMessage;
     private View layoutOfPopup;

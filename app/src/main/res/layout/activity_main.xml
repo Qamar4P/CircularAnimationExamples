@@ -52,7 +52,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"/>
 
-    <com.qamar4p.circularanimation.ButtonProgress
+    <com.qamar4p.circularanimation.GageMeterView
         android:id="@+id/buttonPrimary"
         android:visibility="gone"
         android:layout_width="75dp"
