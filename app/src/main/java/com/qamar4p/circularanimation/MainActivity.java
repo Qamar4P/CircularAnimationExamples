@@ -9,9 +9,7 @@ import android.view.TouchDelegate;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         });
         buttonPrimary = findViewById (R.id.buttonPrimary);
         imageFreqDiffView = findViewById (R.id.imageFreqDiff);
-        imageFreqDiffView.setIcon(R.drawable.lugtuner_animation_circle);
+        imageFreqDiffView.setHiLightImage(R.drawable.gage_animation_circle_green);
+
         imageFreqDiffView.setOnClickListener(new View.OnClickListener() {
             public boolean isToLeft = true;
 

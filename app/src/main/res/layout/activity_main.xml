@@ -19,7 +19,7 @@
         <!--android:layout_height="300dp"-->
         <!--android:layout_centerHorizontal="true"-->
         <!--android:layout_centerVertical="true"-->
-        <!--android:src="@drawable/lugtuner_animation_base"/>-->
+        <!--android:src="@drawable/gage_animation_base"/>-->
 
     <!--<com.qamar4p.circularanimation.FreqDiffIndicator-->
         <!--android:id="@+id/imageFreqDiff"-->
@@ -34,7 +34,8 @@
         android:layout_width="294dp"
         android:layout_height="294dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:background="@drawable/gage_animation_circle"/>
 
     <Button
         android:id="@+id/button1"

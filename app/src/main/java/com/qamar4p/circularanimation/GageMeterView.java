@@ -185,7 +185,7 @@ public class GageMeterView extends View {
      * Set the resource id of the icon to use in the middle of the circle view.
      * @param resourceId The resource id of the drawable.
      */
-    public void setIcon(int resourceId) {
+    public void setHiLightImage(int resourceId) {
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
         mIconImage = bitmap;
         mBitPaint.setShader(new BitmapShader(mIconImage, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
@@ -303,7 +303,7 @@ public class GageMeterView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        canvas.drawColor(mMaskingColor);
+//        canvas.drawColor(mMaskingColor);
         // Create a circular path.
         final float halfWidth = canvas.getWidth()/2;
         final float halfHeight = canvas.getHeight()/2;
@@ -336,9 +336,9 @@ public class GageMeterView extends View {
                     mRotation * mProgress// sweep
             );
         }
-        Log.d("fd","startAngle:"+mStartAngle);
-        Log.d("fd","mProgress:"+ mProgress);
-        Log.d("fd","sweepAngle:"+mRotation * mProgress);
+        Log.d(TAG,"startAngle:"+mStartAngle);
+        Log.d(TAG,"mProgress:"+ mProgress);
+        Log.d(TAG,"sweepAngle:"+mRotation * mProgress);
         path.close();
         mPath.reset();
 //        mPath.addRect(getLeft(),getTop(),getRight(),getBottom(), Path.Direction.CW);
@@ -354,11 +354,12 @@ public class GageMeterView extends View {
 //        mPath.close();
 //        canvas.clipPath(mPath);
         super.onDraw(canvas);
-        if(mProgress == 0) canvas.drawPaint(mBackgroundPaint);
+//        if(mProgress == 0) canvas.drawPaint(mBackgroundPaint);
+        if(mProgress > 0) {
 //        canvas.drawPath(mPath,mArcPaint);
 //        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mShadowPaint);
 //        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mMainPaint);
-        if(Build.VERSION.SDK_INT >= 21){
+            if (Build.VERSION.SDK_INT >= 21) {
 //            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 //            paint.setColor(0xFFFFFFFF);
 //            paint.setStyle(Paint.Style.FILL);
@@ -366,29 +367,30 @@ public class GageMeterView extends View {
 //
 //            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-            canvas.drawArc(
-                    0 - delta, // left
-                    0 - delta, // right
-                    getWidth() + delta, // right
-                    getHeight() + delta, // bottom
-                    mStartAngle, // start angle
-                    mRotation * mProgress, // sweep
-                    true, // use center
-                    mBitPaint // paint
-            );
-        }else {
-            oval.set(
-                    0 + delta, // left
-                    0 + delta, // right
-                    getWidth() - delta, // right
-                    getHeight() - delta); // bottom);
+                canvas.drawArc(
+                        0 - delta, // left
+                        0 - delta, // right
+                        getWidth() + delta, // right
+                        getHeight() + delta, // bottom
+                        mStartAngle, // start angle
+                        mRotation * mProgress, // sweep
+                        true, // use center
+                        mBitPaint // paint
+                );
+            } else {
+                oval.set(
+                        0 + delta, // left
+                        0 + delta, // right
+                        getWidth() - delta, // right
+                        getHeight() - delta); // bottom);
 
-            canvas.drawArc(oval,
-                    mStartAngle, // start angle
-                    mRotation * mProgress, // sweep
-                    true, // use center
-                    mArcPaint // paint
-            );
+                canvas.drawArc(oval,
+                        mStartAngle, // start angle
+                        mRotation * mProgress, // sweep
+                        true, // use center
+                        mArcPaint // paint
+                );
+            }
         }
 //
 //        if (mIconImage != null) {
