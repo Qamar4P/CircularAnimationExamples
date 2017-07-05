@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/black_balls"
+    tools:context="com.qamar4p.circularanimation.MainActivity">
+
+    <!--<View-->
+        <!--android:id="@+id/view1"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:background="@color/colorAccent"-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp" />-->
+
+    <!--<ImageView-->
+        <!--android:layout_width="300dp"-->
+        <!--android:layout_height="300dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:src="@drawable/lugtuner_animation_base"/>-->
+
+    <!--<com.qamar4p.circularanimation.FreqDiffIndicator-->
+        <!--android:id="@+id/imageFreqDiff"-->
+        <!--android:layout_width="380dp"-->
+        <!--android:layout_height="380dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:src="@drawable/black_balls"/>-->
+
+    <com.qamar4p.circularanimation.FreqDiffIndicator2
+        android:id="@+id/imageFreqDiff"
+        android:layout_width="294dp"
+        android:layout_height="294dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_margin="8dp"
+        android:text="gif"
+        android:layout_alignParentBottom="true"/>
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_margin="8dp"
+        android:text="Anim"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
+
+    <com.qamar4p.circularanimation.ButtonProgress
+        android:id="@+id/buttonPrimary"
+        android:visibility="gone"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
