@@ -106,7 +106,7 @@ public class CircleRevealHideView extends View {
     /**
      * The current progress percentage. Value is from 0 - 1.
      */
-    private float mProgress = 100;
+    private float mProgress = 0;
 
     /**
      * The current progress rotation.
@@ -247,7 +247,7 @@ public class CircleRevealHideView extends View {
     /**
      * Animate the progress percentage to the given value.
      */
-    public void showAnimate() {
+    public void hideAnimate() {
         mProgress = 100;
         mValueAnimator.cancel();
         mValueAnimator.setFloatValues(100,0);
@@ -257,7 +257,7 @@ public class CircleRevealHideView extends View {
     /**
      * Animate the progress percentage to the given value.
      */
-    public void hideAnimate() {
+    public void showAnimate() {
         mProgress = 0;
         mValueAnimator.cancel();
         mValueAnimator.setFloatValues(0,100);

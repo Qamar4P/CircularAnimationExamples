@@ -28,9 +28,9 @@ public class Main3Activity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isCircleShowed) {
-                    circleRevealView.showAnimate();
-                }else {
                     circleRevealView.hideAnimate();
+                }else {
+                    circleRevealView.showAnimate();
                 }
                 isCircleShowed = !isCircleShowed;
 
