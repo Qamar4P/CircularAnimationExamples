@@ -2,19 +2,25 @@ package com.qamar4p.circularanimation;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
+import android.graphics.Shader;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 /**
@@ -62,7 +68,7 @@ public class GageMeterView extends View {
     /**
      * Default circle color
      */
-    private static final int DEFAULT_CIRCLE_COLOR = Color.WHITE;
+    private static final int DEFAULT_CIRCLE_COLOR = Color.parseColor("#FF5252");
 
     /**
      * Value to use for clockwise rotation.
@@ -107,7 +113,7 @@ public class GageMeterView extends View {
     /**
      * The time it takes in milliseconds to animate the progress to the next set value.
      */
-    private int mIncrementDuration = 800;
+    private int mIncrementDuration = 500;
 
     /**
      * The blur radius of the drop shadow.
@@ -150,7 +156,9 @@ public class GageMeterView extends View {
      */
     private Bitmap mNextImage;
 
+    RectF oval = new RectF();
     private float mFadeAlpha;
+    private Paint mBitPaint;
 
     /**
      * The value animator for the progress arc.
@@ -158,7 +166,9 @@ public class GageMeterView extends View {
     private ValueAnimator mValueAnimator;
     private Toast toast;
     private boolean isProgressDone;
-    private View layoutOfPopup;
+    final Path mPath = new Path();
+    private Paint mMaskPaint;
+    private Paint mBackgroundPaint;
 
     public GageMeterView(Context context) {
         super(context);
@@ -167,40 +177,45 @@ public class GageMeterView extends View {
 
     void toast(String msg){
         if(toast !=null) toast.cancel();
-        toast = Toast.makeText(getContext(),msg,Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getContext(),msg, Toast.LENGTH_SHORT);
         toast.show();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if(isProgressDone && layoutOfPopup != null){
-            layoutOfPopup.dispatchTouchEvent(event);
-        }
-        int x = (int) event.getX();
-        int y = (int) event.getY();
-        switch (event.getAction()) {
+    /**
+     * Set the resource id of the icon to use in the middle of the circle view.
+     * @param resourceId The resource id of the drawable.
+     */
+    public void setIcon(int resourceId) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
+        mIconImage = bitmap;
+        mBitPaint.setShader(new BitmapShader(mIconImage, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
 
-            case MotionEvent.ACTION_DOWN:
-                animateProgress(100);
-                return true;
-
-            case MotionEvent.ACTION_MOVE:
-
-                return true;
-
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (mValueAnimator != null) {
-                    mValueAnimator.cancel();
-                    mValueAnimator = null;
-                }
-                isProgressDone = false;
-                return false;
-
-        }
-
-        return true;
     }
+
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        int x = (int) event.getX();
+//        int y = (int) event.getY();
+//        switch (event.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                animateProgress(100);
+//                return true;
+//
+//            case MotionEvent.ACTION_MOVE:
+//                return true;
+//
+//            case MotionEvent.ACTION_UP:
+//            case MotionEvent.ACTION_CANCEL:
+//                if (mValueAnimator != null) {
+//                    mValueAnimator.cancel();
+//                }
+//                isProgressDone = false;
+//                return false;
+//
+//        }
+//
+//        return true;
+//    }
 
     public GageMeterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -212,16 +227,21 @@ public class GageMeterView extends View {
         init();
 
     }
-
-    public GageMeterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
+//    private int mMaskingColor = Color.parseColor("#D20E0F02");
+    private int mMaskingColor = Color.parseColor("#000E0F02");
 
     private void init() {
         mMainPaint = new Paint();
         mMainPaint.setColor(DEFAULT_CIRCLE_COLOR);
         mMainPaint.setAntiAlias(true);
+
+        mBitPaint = new Paint();
+
+        setWillNotDraw(false);
+        setLayerType(LAYER_TYPE_HARDWARE, null);
+
+        mBackgroundPaint = new Paint();
+        mBackgroundPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 
         mArcPaint = new Paint();
         mArcPaint.setStyle(Paint.Style.STROKE);
@@ -229,46 +249,157 @@ public class GageMeterView extends View {
         mArcPaint.setColor(DEFAULT_BORDER_COLOR);
         mArcPaint.setAntiAlias(true);
 
-        mShadowPaint = new Paint();
-        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
-        mShadowPaint.setShadowLayer(mShadowRadius, 0, 0, Color.argb(100, 0, 0, 0));
+//        mShadowPaint = new Paint();
+//        setLayerType(LAYER_TYPE_SOFTWARE, mShadowPaint);
+//        mShadowPaint.setShadowLayer(mShadowRadius, 0, 0, Color.argb(100, 0, 0, 0));
+
+        mMaskPaint = new Paint();
+//        setLayerType(LAYER_TYPE_SOFTWARE, mMaskPaint);
+        mMaskPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
 
         mIconPaint = new Paint();
         mNextIconPaint = new Paint();
+
+        mValueAnimator = ValueAnimator.ofFloat(0, 100);
+        mValueAnimator.setDuration(mIncrementDuration);
+//        mValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mProgress = (Float)animation.getAnimatedValue();
+                invalidate();
+            }
+        });
+
+        mValueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+//                if (mProgress >= 1 && mOnComplete != null) {
+//                    mOnComplete.run();
+//                }
+//                mProgress = mToProgress = 0;
+//                invalidate();
+                isProgressDone = true;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+//                mProgress = mToProgress = 0;
+//                invalidate();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
     }
     /**
      * @see View#onDraw(Canvas)
      */
     @Override
     protected void onDraw(Canvas canvas) {
+        canvas.drawColor(mMaskingColor);
+        // Create a circular path.
+        final float halfWidth = canvas.getWidth()/2;
+        final float halfHeight = canvas.getHeight()/2;
+        final float radius = Math.max(halfWidth, halfHeight);
+        final Path path = new Path();
+
+        float delta = radius;
+//        double x = radius + (radius)*Math.cos(-mRotation * mProgress);
+//        double y = radius + (radius)*Math.sin(-mRotation * mProgress);
+//        float delta = mShadowRadius + (mBorderWidth / 2);
+//        path.addCircle(halfWidth, halfHeight, radius, Path.Direction.CCW);
+        if(Build.VERSION.SDK_INT >= 21){
+            path.addArc(
+                    halfWidth - delta, // left
+                    halfHeight - delta, // right
+                    getWidth() + delta, // right
+                    getHeight() + delta, // bottom
+                    mStartAngle, // start angle
+                    mRotation * mProgress // sweep
+            );
+        }else {
+            oval.set(
+                    0 + delta, // left
+                    0 + delta, // right
+                    getWidth() - delta, // right
+                    getHeight() - delta); // bottom);
+
+            path.addArc(oval,
+                    mStartAngle, // start angle
+                    mRotation * mProgress// sweep
+            );
+        }
+        Log.d("fd","startAngle:"+mStartAngle);
+        Log.d("fd","mProgress:"+ mProgress);
+        Log.d("fd","sweepAngle:"+mRotation * mProgress);
+        path.close();
+        mPath.reset();
+//        mPath.addRect(getLeft(),getTop(),getRight(),getBottom(), Path.Direction.CW);
+        mPath.addPath(path);
+        mPath.setFillType(Path.FillType.EVEN_ODD);
+        mPath.close();
+
+//        mPath.reset();
+//        mPath.moveTo((float) canvas.getWidth() * mProgress, 0.0f);
+//        mPath.lineTo((float) canvas.getWidth() * mProgress, canvas.getHeight());
+//        mPath.lineTo(canvas.getWidth(), canvas.getHeight());
+//        mPath.lineTo(canvas.getWidth(), 0.0f);
+//        mPath.close();
+//        canvas.clipPath(mPath);
         super.onDraw(canvas);
-        float cx = getWidth() / 2;
-        float cy = getHeight() / 2;
+        if(mProgress == 0) canvas.drawPaint(mBackgroundPaint);
+//        canvas.drawPath(mPath,mArcPaint);
+//        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mShadowPaint);
+//        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mMainPaint);
+        if(Build.VERSION.SDK_INT >= 21){
+//            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+//            paint.setColor(0xFFFFFFFF);
+//            paint.setStyle(Paint.Style.FILL);
+//            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+//
+//            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-        float delta = mShadowRadius + (mBorderWidth / 2);
+            canvas.drawArc(
+                    0 - delta, // left
+                    0 - delta, // right
+                    getWidth() + delta, // right
+                    getHeight() + delta, // bottom
+                    mStartAngle, // start angle
+                    mRotation * mProgress, // sweep
+                    true, // use center
+                    mBitPaint // paint
+            );
+        }else {
+            oval.set(
+                    0 + delta, // left
+                    0 + delta, // right
+                    getWidth() - delta, // right
+                    getHeight() - delta); // bottom);
 
-        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mShadowPaint);
-        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mMainPaint);
-        canvas.drawArc(
-            0 + delta, // left
-            0 + delta, // right
-            getWidth() - delta, // right
-            getHeight() - delta, // bottom
-            mStartAngle, // start angle
-            mRotation * mProgress, // sweep
-            false, // use center
-            mArcPaint // paint
-        );
-
-        if (mIconImage != null) {
-            mIconPaint.setAlpha((int)(255 * (1 - mFadeAlpha)));
-            canvas.drawBitmap(mIconImage, (getWidth() - mIconImage.getWidth()) / 2, (getHeight() - mIconImage.getHeight()) / 2, mIconPaint);
+            canvas.drawArc(oval,
+                    mStartAngle, // start angle
+                    mRotation * mProgress, // sweep
+                    true, // use center
+                    mArcPaint // paint
+            );
         }
-
-        if (mNextImage != null) {
-            mNextIconPaint.setAlpha((int)(255 * mFadeAlpha));
-            canvas.drawBitmap(mNextImage, (getWidth() - mNextImage.getWidth()) / 2, (getHeight() - mNextImage.getHeight()) / 2, mNextIconPaint);
-        }
+//
+//        if (mIconImage != null) {
+//            mIconPaint.setAlpha((int)(255 * (1 - mFadeAlpha)));
+//            canvas.drawBitmap(mIconImage, (getWidth() - mIconImage.getWidth()) / 2, (getHeight() - mIconImage.getHeight()) / 2, mIconPaint);
+//        }
+//
+//        if (mNextImage != null) {
+//            mNextIconPaint.setAlpha((int)(255 * mFadeAlpha));
+//            canvas.drawBitmap(mNextImage, (getWidth() - mNextImage.getWidth()) / 2, (getHeight() - mNextImage.getHeight()) / 2, mNextIconPaint);
+//        }
     }
 
     /**
@@ -279,7 +410,10 @@ public class GageMeterView extends View {
 
         // Valid values for progress are only between 0 and 1
         if (progress < 0) {
-            progress = 0;
+            mRotation = ROTATION_COUNTER_CLOCKWISE;
+            progress = Math.abs(progress);
+        }else {
+            mRotation = ROTATION_CLOCKWISE;
         }
 
         if (progress > 1) {
@@ -293,50 +427,9 @@ public class GageMeterView extends View {
             return;
         }
 
-                if (mValueAnimator != null) {
-                    mValueAnimator.cancel();
-                    mValueAnimator = null;
-                }
-
-                mValueAnimator = new ValueAnimator().ofFloat(mToProgress, toProgress);
-                mValueAnimator.setDuration(mIncrementDuration);
-
-                mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        Float value = (Float)animation.getAnimatedValue();
-                        mProgress = value;
-                        invalidate();
-                    }
-                });
-
-                mValueAnimator.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        if (mProgress >= 1 && mOnComplete != null) {
-                            mOnComplete.run();
-                        }
-                        mProgress = mToProgress = 0;
-                        invalidate();
-                        isProgressDone = true;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        mProgress = mToProgress = 0;
-                        invalidate();
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-                mValueAnimator.start();
+        mValueAnimator.cancel();
+        mValueAnimator.setFloatValues(mToProgress, toProgress);
+        mValueAnimator.start();
 
     }
 
@@ -362,110 +455,5 @@ public class GageMeterView extends View {
      */
     public void setOnComplete(Runnable runnable) {
         mOnComplete = runnable;
-    }
-
-    /**
-     * Set the width of the progress meter.
-     * @param width The border width.
-     */
-    public void setBorderWidth(int width) {
-        mBorderWidth = width;
-        mArcPaint.setStrokeWidth(mBorderWidth);
-    }
-
-    /**
-     * Set the progress meter color.
-     * @param color The color.
-     */
-    public void setBorderColor(int color) {
-        mArcPaint.setColor(color);
-    }
-
-    /**
-     * Set the circle color.
-     * @param color
-     */
-    public void setCircleColor(int color) {
-        mMainPaint.setColor(color);
-    }
-
-    /**
-     * Reset the progress.
-     */
-    public void reset() {
-        mToProgress = 0;
-        mProgress = 0;
-        invalidate();
-    }
-
-    /**
-     * Set the resource id of the icon to use in the middle of the circle view.
-     * @param resourceId The resource id of the drawable.
-     */
-    public void setIcon(int resourceId) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
-        mIconImage = bitmap;
-
-    }
-
-    /**
-     * Set whether the rotation of the progress is clockwise or counter clockwise.
-     * @param clockwise
-     */
-    public void setRotationClockwise(boolean clockwise) {
-        mRotation = clockwise ? ROTATION_CLOCKWISE : ROTATION_COUNTER_CLOCKWISE;
-    }
-
-    /**
-     * Animate to the next icon to use. This is centered in the middle of the circle view.
-     * @param resourceId The resource id of the drawable to use.
-     */
-    public void animateNextImage(int resourceId) {
-        Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
-
-        mNextImage = bitmap;
-        mFadeAlpha = 0;
-
-        ValueAnimator anim = new ValueAnimator().ofFloat(0, 1);
-        anim.setDuration(500);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float)animation.getAnimatedValue();
-                mFadeAlpha = value;
-                invalidate();
-            }
-        });
-
-        anim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIconImage = mNextImage;
-                mNextImage = null;
-                mFadeAlpha = 0;
-                mIconPaint.setAlpha(255);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        anim.start();
-    }
-
-
-    public void setPopupView(View view) {
-        layoutOfPopup = view;
     }
 }

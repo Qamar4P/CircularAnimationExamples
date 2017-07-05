@@ -8,19 +8,23 @@ import android.os.Bundle;
 import android.view.TouchDelegate;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private float downX, downY;
     private VelocityTracker velocityTracker;
     private View view1;
-    private GageMeterView buttonPrimary;
+    private CircleProgressView buttonPrimary;
     Context context;
     private PopupWindow popupMessage;
     private View layoutOfPopup;
 //    private FreqDiffIndicator imageFreqDiffView;
-    private FreqDiffIndicator2 imageFreqDiffView;
+    private GageMeterView imageFreqDiffView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 isToLeft = !isToLeft;
             }
         });
+        initPopup();
 //        imageFreqDiffView.setColorFilter(ContextCompat.getColor(context,R.color.colorAccent));
 
         buttonPrimary.setIcon(R.mipmap.ic_launcher);
@@ -94,9 +99,53 @@ public class MainActivity extends AppCompatActivity {
                 if (View.class.isInstance(buttonPrimary.getParent())) {
                     ((View) buttonPrimary.getParent()).setTouchDelegate(touchDelegate);
                 }
+
                 buttonPrimary.setPopupView(layoutOfPopup);
             }
         });
+    }
+
+    private void initPopup() {
+        popupMessage = new PopupWindow(FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+//        TextView tvMsg = new TextView(context);
+//        tvMsg.setText("Hi this is pop up window...");
+//
+//        LinearLayout layoutOfPopup = new LinearLayout(context);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT);
+//        layoutOfPopup.setOrientation(LinearLayout.VERTICAL);
+//        layoutOfPopup.addView(tvMsg, layoutParams);
+        layoutOfPopup = getLayoutInflater().inflate(R.layout.popup_alert_ask, null);
+        layoutOfPopup.findViewById(R.id.buttonClose).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupMessage.dismiss();
+                buttonPrimary.setPopupView(null);
+
+                Toast.makeText(context,"buttonClose",Toast.LENGTH_SHORT).show();
+            }
+        });
+        layoutOfPopup.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupMessage.dismiss();
+                buttonPrimary.setPopupView(null);
+
+                Toast.makeText(context,"buttonNo",Toast.LENGTH_SHORT).show();
+            }
+        });
+        layoutOfPopup.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buttonPrimary.setPopupView(null);
+
+                popupMessage.dismiss();
+                Toast.makeText(context,"buttonYes",Toast.LENGTH_SHORT).show();
+            }
+        });
+        popupMessage.setTouchable(true);
+        popupMessage.setContentView(layoutOfPopup);
     }
 
 
