@@ -1,4 +1,4 @@
-package com.qamar4p.circularanimation;
+package com.qamar4p.circularanimation.helpers;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,12 +15,12 @@ import java.util.List;
  * Created by Qamar on 7/5/2017.
  */
 
-public class LoliAnimator {
+public class StickAnimator {
 
     private final View mView;
     private final AnimatorSet animatorSet;
 
-    public LoliAnimator(View view){
+    public StickAnimator(View view){
         mView = view;
         animatorSet = animRotate(150,0,55,new AnimatorListenerAdapter(){
             @Override public void onAnimationEnd(Animator animation) {

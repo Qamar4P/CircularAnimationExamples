@@ -34,7 +34,7 @@
         android:text="Zzz"
         android:textSize="26sp"/>
 
-    <com.qamar4p.circularanimation.CircleRevealHideView
+    <com.qamar4p.circularanimation.custom_views.CircleRevealHideView
         android:id="@+id/circleRevealView"
         android:layout_width="100dp"
         android:layout_height="100dp"

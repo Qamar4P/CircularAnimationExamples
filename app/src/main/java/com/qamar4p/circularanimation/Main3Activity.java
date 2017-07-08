@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.qamar4p.circularanimation.custom_views.CircleRevealHideView;
+import com.qamar4p.circularanimation.helpers.RotateAnimator;
+import com.qamar4p.circularanimation.helpers.ScaleBouncingAnimator;
+import com.qamar4p.circularanimation.helpers.StickAnimator;
+
 public class Main3Activity extends AppCompatActivity {
 
     private TextView textView1;
@@ -111,7 +116,7 @@ public class Main3Activity extends AppCompatActivity {
 //                set.start();
 //                Toast.makeText(getApplicationContext(),"H",Toast.LENGTH_SHORT).show();
 
-                new LoliAnimator(findViewById(R.id.loliView)).play();
+                new StickAnimator(findViewById(R.id.loliView)).play();
                 new RotateAnimator(textView1,0,360).play(800);
                 new ScaleBouncingAnimator(textView2,textView3).play();
 

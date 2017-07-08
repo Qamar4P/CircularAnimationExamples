@@ -1,4 +1,4 @@
-package com.qamar4p.circularanimation;
+package com.qamar4p.circularanimation.custom_views;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -8,19 +8,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
 /**
@@ -113,7 +112,7 @@ public class GageMeterView extends View {
     /**
      * The time it takes in milliseconds to animate the progress to the next set value.
      */
-    private int mIncrementDuration = 500;
+    private int mIncrementDuration = 1000;
 
     /**
      * The blur radius of the drop shadow.
@@ -185,14 +184,20 @@ public class GageMeterView extends View {
      * Set the resource id of the icon to use in the middle of the circle view.
      * @param resourceId The resource id of the drawable.
      */
-    public void setHiLightImage(int resourceId) {
+    public void setHiLightImage(int resourceId, int color) {
         Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), resourceId);
-        mIconImage = bitmap;
+//        mIconImage = bitmap;
+//        mBitPaint.setShader(new BitmapShader(mIconImage, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+
+        mIconImage = Bitmap.createScaledBitmap(bitmap,getWidth(),getHeight(),false);
         mBitPaint.setShader(new BitmapShader(mIconImage, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
+//        ColorFilter filter = new PorterDuffColorFilter(ContextCompat.getColor(this, R.color.COLOR_1_DARK), PorterDuff.Mode.SRC_IN);
+        ColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN);
+        mBitPaint.setColorFilter(filter);
 
     }
 
-//    @Override
+    //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
 //        int x = (int) event.getX();
 //        int y = (int) event.getY();
@@ -308,53 +313,9 @@ public class GageMeterView extends View {
         final float halfWidth = canvas.getWidth()/2;
         final float halfHeight = canvas.getHeight()/2;
         final float radius = Math.max(halfWidth, halfHeight);
-        final Path path = new Path();
+//        final Path path = new Path();
 
-        float delta = radius;
-//        double x = radius + (radius)*Math.cos(-mRotation * mProgress);
-//        double y = radius + (radius)*Math.sin(-mRotation * mProgress);
-//        float delta = mShadowRadius + (mBorderWidth / 2);
-//        path.addCircle(halfWidth, halfHeight, radius, Path.Direction.CCW);
-        if(Build.VERSION.SDK_INT >= 21){
-            path.addArc(
-                    halfWidth - delta, // left
-                    halfHeight - delta, // right
-                    getWidth() + delta, // right
-                    getHeight() + delta, // bottom
-                    mStartAngle, // start angle
-                    mRotation * mProgress // sweep
-            );
-        }else {
-            oval.set(
-                    0 + delta, // left
-                    0 + delta, // right
-                    getWidth() - delta, // right
-                    getHeight() - delta); // bottom);
-
-            path.addArc(oval,
-                    mStartAngle, // start angle
-                    mRotation * mProgress// sweep
-            );
-        }
-        Log.d(TAG,"startAngle:"+mStartAngle);
-        Log.d(TAG,"mProgress:"+ mProgress);
-        Log.d(TAG,"sweepAngle:"+mRotation * mProgress);
-        path.close();
-        mPath.reset();
-//        mPath.addRect(getLeft(),getTop(),getRight(),getBottom(), Path.Direction.CW);
-        mPath.addPath(path);
-        mPath.setFillType(Path.FillType.EVEN_ODD);
-        mPath.close();
-
-//        mPath.reset();
-//        mPath.moveTo((float) canvas.getWidth() * mProgress, 0.0f);
-//        mPath.lineTo((float) canvas.getWidth() * mProgress, canvas.getHeight());
-//        mPath.lineTo(canvas.getWidth(), canvas.getHeight());
-//        mPath.lineTo(canvas.getWidth(), 0.0f);
-//        mPath.close();
-//        canvas.clipPath(mPath);
         super.onDraw(canvas);
-//        if(mProgress == 0) canvas.drawPaint(mBackgroundPaint);
         if(mProgress > 0) {
 //        canvas.drawPath(mPath,mArcPaint);
 //        canvas.drawCircle(cx, cy, getWidth() / 2 - mShadowRadius - DEFAULT_BORDER_WIDTH, mShadowPaint);
@@ -368,10 +329,10 @@ public class GageMeterView extends View {
 //            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
                 canvas.drawArc(
-                        0 - delta, // left
-                        0 - delta, // right
-                        getWidth() + delta, // right
-                        getHeight() + delta, // bottom
+                        0 - radius, // left
+                        0 - radius, // right
+                        getWidth() + radius, // right
+                        getHeight() + radius + (radius * 0.0f /*this is require if image is half circle*/), // bottom
                         mStartAngle, // start angle
                         mRotation * mProgress, // sweep
                         true, // use center
@@ -379,10 +340,10 @@ public class GageMeterView extends View {
                 );
             } else {
                 oval.set(
-                        0 + delta, // left
-                        0 + delta, // right
-                        getWidth() - delta, // right
-                        getHeight() - delta); // bottom);
+                        0 + radius, // left
+                        0 + radius, // right
+                        getWidth() - radius + (radius * 0.0f /*this is require if image is half circle*/), // right
+                        getHeight() - radius); // bottom);
 
                 canvas.drawArc(oval,
                         mStartAngle, // start angle
@@ -429,10 +390,24 @@ public class GageMeterView extends View {
             return;
         }
 
+        if (progress >= 1f) {
+            mToProgress = mProgress = 1;
+            invalidate();
+            return;
+        }
+
+        mIncrementDuration = (int) (toProgress * 1800f);
+
         mValueAnimator.cancel();
+        mValueAnimator.setDuration(mIncrementDuration);
         mValueAnimator.setFloatValues(mToProgress, toProgress);
         mValueAnimator.start();
 
+    }
+
+    public void resetAnim() {
+        mToProgress = mProgress = 0;
+        invalidate();
     }
 
     /**

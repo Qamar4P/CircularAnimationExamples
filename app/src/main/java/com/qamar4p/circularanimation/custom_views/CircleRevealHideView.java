@@ -1,4 +1,4 @@
-package com.qamar4p.circularanimation;
+package com.qamar4p.circularanimation.custom_views;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;

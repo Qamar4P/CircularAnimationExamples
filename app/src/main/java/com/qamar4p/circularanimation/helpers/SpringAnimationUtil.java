@@ -1,4 +1,4 @@
-package com.qamar4p.circularanimation;
+package com.qamar4p.circularanimation.helpers;
 
 import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;

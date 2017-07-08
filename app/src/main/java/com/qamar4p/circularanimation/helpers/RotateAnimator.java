@@ -1,4 +1,4 @@
-package com.qamar4p.circularanimation;
+package com.qamar4p.circularanimation.helpers;
 
 import android.view.View;
 import android.view.animation.Animation;

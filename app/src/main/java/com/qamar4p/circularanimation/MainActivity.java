@@ -2,6 +2,7 @@ package com.qamar4p.circularanimation;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
+import com.qamar4p.circularanimation.custom_views.CircleProgressView;
+import com.qamar4p.circularanimation.custom_views.GageMeterView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,21 +37,32 @@ public class MainActivity extends AppCompatActivity {
         velocityTracker = VelocityTracker.obtain();
 
 //        view1 = findViewById (R.id.view1);
-        findViewById (R.id.button1).setOnClickListener(new View.OnClickListener() {
+        findViewById (R.id.button2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(context,Main2Activity.class));
             }
         });
-        findViewById (R.id.button2).setOnClickListener(new View.OnClickListener() {
+        findViewById (R.id.button3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(context,Main3Activity.class));
             }
         });
+        findViewById (R.id.button4).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(context,Main4Activity.class));
+            }
+        });
         buttonPrimary = findViewById (R.id.buttonPrimary);
         imageFreqDiffView = findViewById (R.id.imageFreqDiff);
-        imageFreqDiffView.setHiLightImage(R.drawable.gage_animation_circle_green);
+        imageFreqDiffView.post(new Runnable() {
+            @Override
+            public void run() {
+                imageFreqDiffView.setHiLightImage(R.drawable.gage_animation_circle, Color.GREEN);
+            }
+        });
 
         imageFreqDiffView.setOnClickListener(new View.OnClickListener() {
             public boolean isToLeft = true;
