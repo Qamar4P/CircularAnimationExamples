@@ -60,9 +60,9 @@
         android:layout_height="75dp"
         android:layout_margin="8dp"
         android:text="Waves"
+        android:visibility="gone"
         android:layout_above="@id/button3"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentRight="true"/>
 
     <com.qamar4p.circularanimation.custom_views.CircleProgressView
         android:id="@+id/buttonPrimary"
