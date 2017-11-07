@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CircularAnimation.iml" filepath="$PROJECT_DIR$/CircularAnimation.iml" />
+      <module fileurl="file://D:\LocoPixel\QamarsLab\CircularAnimationExamples\CircularAnimation.iml" filepath="D:\LocoPixel\QamarsLab\CircularAnimationExamples\CircularAnimation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CircularAnimationExamples.iml" filepath="$PROJECT_DIR$/CircularAnimationExamples.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

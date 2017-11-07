@@ -55,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(context,Main4Activity.class));
             }
         });
-        buttonPrimary = findViewById (R.id.buttonPrimary);
-        imageFreqDiffView = findViewById (R.id.imageFreqDiff);
+        buttonPrimary = (CircleProgressView) findViewById (R.id.buttonPrimary);
+        imageFreqDiffView = (GageMeterView) findViewById (R.id.imageFreqDiff);
         imageFreqDiffView.post(new Runnable() {
             @Override
             public void run() {
